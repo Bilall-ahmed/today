@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Qualifications</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .box {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h1>Get Qualifications</h1>
+    <form id="apiKeyForm">
+        <label for="apiKey">Enter API Key:</label>
+        <input type="text" id="apiKey" name="apiKey" required>
+        <button type="submit">Submit</button>
+    </form>
+    <div id="qualificationData"></div>
+
+    <script>
+        document.getElementById('apiKeyForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var apiKey = document.getElementById('apiKey').value;
+            var url = 'https://l2k0m24to7.execute-api.ap-south-1.amazonaws.com/dev/details';
+            
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'x-api-key': apiKey
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display data on the page
+                var qualificationDataElement = document.getElementById('qualificationData');
+                qualificationDataElement.innerHTML = ''; // Clear previous data
+                
+                if (Array.isArray(data.qualifications)) {
+                    data.qualifications.forEach(qualification => {
+                        var box = document.createElement('div');
+                        box.className = 'box';
+                        box.textContent = JSON.stringify(qualification);
+                        qualificationDataElement.appendChild(box);
+                    });
+                } else {
+                    var box = document.createElement('div');
+                    box.className = 'box';
+                    box.textContent = 'No qualifications found';
+                    qualificationDataElement.appendChild(box);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
